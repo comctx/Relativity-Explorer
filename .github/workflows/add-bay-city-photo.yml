@@ -1,0 +1,26 @@
+name: Add Bay City photo
+
+on:
+  push:
+    paths:
+      - ".github/workflows/add-bay-city-photo.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  add-photo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download Wenonah Park photo
+        run: |
+          mkdir -p images
+          curl -L --fail --retry 3             "https://upload.wikimedia.org/wikipedia/commons/0/03/Wenonah_Park_Bay_City_MI.jpg"             -o images/wenonah-park-bay-city.jpg
+      - name: Commit photo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images/wenonah-park-bay-city.jpg
+          git commit -m "Add Wenonah Park Bay City photo" || exit 0
+          git push
