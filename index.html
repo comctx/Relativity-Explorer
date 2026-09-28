@@ -24,6 +24,13 @@
 .easter-paper strong{color:#dce9ff}
 .easter-signoff{margin-top:18px;font-weight:900;color:#dce9ff}
 
+
+.otherwords-start{cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.otherwords-start:hover,.otherwords-start:focus{transform:translateY(-1px);border-color:#79c8ff;box-shadow:0 0 0 2px rgba(121,200,255,.12);outline:none}
+.otherwords-hint{margin:12px 0 0;font-weight:800;color:#79c8ff}
+.otherwords-simple{display:none}
+.otherwords-simple.open{display:grid}
+
 </style>
 </head>
 <body>
@@ -39,13 +46,14 @@
 
 <section id="otherwords">
   <div class="section-title"><span class="icon">💬</span><h2>In Other Words</h2></div>
-  <div class="card" style="margin-bottom:14px">
+  <div class="card otherwords-start" id="otherwordsStart" role="button" tabindex="0" aria-expanded="false" aria-controls="otherwordsSimple" style="margin-bottom:14px">
     <div class="kicker">Relativity without the technical language</div>
     <h3>Start here if the science sounds complicated</h3>
     <p>These are the big ideas of relativity in everyday language. No equations are needed to understand the basic meaning.</p>
+    <p class="otherwords-hint" id="otherwordsHint">Tap this box to open the simple explanations ↓</p>
   </div>
 
-  <div class="grid">
+  <div class="grid otherwords-simple" id="otherwordsSimple">
     <div class="card">
       <div class="kicker">Speed of light</div>
       <h3>Light’s speed does not change for you</h3>
@@ -265,6 +273,24 @@
 </div>
 
 <script>
+
+const otherwordsStart=document.getElementById('otherwordsStart');
+const otherwordsSimple=document.getElementById('otherwordsSimple');
+const otherwordsHint=document.getElementById('otherwordsHint');
+function toggleOtherWords(){
+  if(!otherwordsStart||!otherwordsSimple)return;
+  const open=otherwordsSimple.classList.toggle('open');
+  otherwordsStart.setAttribute('aria-expanded',String(open));
+  if(otherwordsHint)otherwordsHint.textContent=open?'Tap this box to close the simple explanations ↑':'Tap this box to open the simple explanations ↓';
+  if(open)setTimeout(()=>otherwordsSimple.scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+if(otherwordsStart){
+  otherwordsStart.addEventListener('click',toggleOtherWords);
+  otherwordsStart.addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleOtherWords();}
+  });
+}
+
 
 let easterTapCount=0,easterTapTimer=null;
 const atomEgg=document.querySelector('.hero .atom');
