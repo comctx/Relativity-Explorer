@@ -1,48 +1,16 @@
 workflows:
   ios-simulator-check:
-    name: Relativity Explorer iOS Build Check
-    instance_type: mac_mini_m2
-    max_build_duration: 30
-    environment:
-      node: 22
-      xcode: latest
-    scripts:
-      - name: Install dependencies
-        script: |
-          npm install
-      - name: Prepare web app
-        script: |
-          npm run prepare:web
-      - name: Create iOS project
-        script: |
-          rm -rf ios
-          npx cap add ios --packagemanager SPM
-          npx cap sync ios
-      - name: Build iOS simulator app
-        script: |
-          cd ios/App
-          xcodebuild \
-            -project App.xcodeproj \
-            -scheme App \
-            -configuration Debug \
-            -sdk iphonesimulator \
-            -destination 'generic/platform=iOS Simulator' \
-            CODE_SIGNING_ALLOWED=NO \
-            build
-    artifacts:
-      - ios/App/build/**/*
-
-  ios-signed-check:
     name: Relativity Explorer Signed IPA Check
     instance_type: mac_mini_m2
     max_build_duration: 30
     integrations:
       app_store_connect: Codemagic
     environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.donaldreckman.relativityexplorer
       node: 22
       xcode: latest
-      vars:
-        BUNDLE_ID: "com.donaldreckman.relativityexplorer"
     scripts:
       - name: Install dependencies
         script: |
@@ -55,17 +23,6 @@ workflows:
           rm -rf ios
           npx cap add ios --packagemanager SPM
           npx cap sync ios
-      - name: Initialize signing keychain
-        script: |
-          keychain initialize
-      - name: Fetch or create Apple signing files
-        script: |
-          app-store-connect fetch-signing-files "$BUNDLE_ID" \
-            --type IOS_APP_STORE \
-            --create
-      - name: Add signing certificate
-        script: |
-          keychain add-certificates
       - name: Apply signing profile
         script: |
           xcode-project use-profiles --project "$CM_BUILD_DIR/ios/App/App.xcodeproj"
