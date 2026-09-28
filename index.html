@@ -119,7 +119,7 @@
 
 <section><div class="card"><h3>About this app</h3><p>Relativity Explorer is designed to make the big ideas intuitive before introducing the equations. Some examples intentionally simplify acceleration, gravity, and astrophysical details for learning purposes.</p></div></section>
 </main>
-<footer><strong>Relativity Explorer</strong><br>A DONCO-BAYCITY™ App</footer>
+<footer><strong>Relativity Explorer</strong><br>A DONCO-BAYCITY™ Educational App</footer>
 <script>
 const c=299792458;let unitSystem=localStorage.getItem('relativityUnits')||'metric';const gamma=b=>1/Math.sqrt(1-b*b);function sup(n){const m={'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};return String(n).split('').map(x=>m[x]||x).join('')}function sci(n,d=2){if(!isFinite(n)||n===0)return'0';const e=Math.floor(Math.log10(Math.abs(n))),a=n/10**e;return`${a.toFixed(d)} × 10${sup(e)}`}
 const limitSpeed=document.getElementById('limitSpeed');function updateLimit(){const p=+limitSpeed.value,b=p/100,g=gamma(b);limitSpeedLabel.textContent=p.toFixed(1)+'%';limitGamma.textContent=g.toFixed(3)+'×';const fill=Math.min(100,Math.log10(g+0.001)*65+10);energyBarFill.style.width=fill+'%';limitRocket.style.transform='translateX('+Math.min(70,p*.7)+'px)'}limitSpeed.oninput=updateLimit;
