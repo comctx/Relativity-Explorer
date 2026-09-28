@@ -1,0 +1,33 @@
+workflows:
+  ios-simulator-check:
+    name: Relativity Explorer iOS Build Check
+    instance_type: mac_mini_m2
+    max_build_duration: 30
+    environment:
+      node: 22
+      xcode: latest
+    scripts:
+      - name: Install dependencies
+        script: |
+          npm install
+      - name: Prepare web app
+        script: |
+          npm run prepare:web
+      - name: Create iOS project
+        script: |
+          rm -rf ios
+          npx cap add ios --packagemanager SPM
+          npx cap sync ios
+      - name: Build iOS simulator app
+        script: |
+          cd ios/App
+          xcodebuild \
+            -project App.xcodeproj \
+            -scheme App \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+    artifacts:
+      - ios/App/build/**/*
